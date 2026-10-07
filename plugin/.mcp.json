@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "wise-mind": {
+      "type": "http",
+      "url": "https://wisemind.calebsargeant.com/"
+    }
+  }
+}

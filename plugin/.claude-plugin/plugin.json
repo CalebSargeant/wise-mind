@@ -1,0 +1,13 @@
+{
+  "name": "wise-mind",
+  "displayName": "Wise Mind",
+  "version": "1.0.0",
+  "description": "Practical and emotional help for hard moments with people, from DBT skills and the Let Them / Let Me idea. Connects the public, read-only wisemind.calebsargeant.com MCP server and adds a skill that tells Claude when to use it.",
+  "author": { "name": "Caleb Sargeant", "url": "https://calebsargeant.com/" },
+  "homepage": "https://wisemind.calebsargeant.com/",
+  "repository": "https://github.com/CalebSargeant/wise-mind",
+  "license": "Apache-2.0",
+  "keywords": ["dbt", "dialectical-behaviour-therapy", "emotional-support", "boundaries", "self-help", "mcp"],
+  "privacyPolicyUrl": "https://wisemind.calebsargeant.com/privacy",
+  "documentationUrl": "https://wisemind.calebsargeant.com/"
+}

@@ -1,0 +1,22 @@
+version: 2
+updates:
+  # Wrangler is the only dependency, and the deploy pins the same version in
+  # .github/workflows/deploy.yml (`cloudflare-wrangler-version`). A bump here needs that
+  # line bumped with it, or CI and `npm run bindings` stop running the same Wrangler.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      npm:
+        patterns: ['*']
+
+  # Actions are pinned by commit SHA with the tag in a trailing comment; Dependabot moves
+  # both together.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']

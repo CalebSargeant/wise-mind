@@ -1,0 +1,51 @@
+# Version and release the MCP Worker with MagmaMoose/diatreme, as CalebSargeant/mcp and CalebSargeant/docs do.
+#
+# Every merge to main cuts a tag and a GitHub Release, so a deployed Worker can always be
+# traced back to a version rather than to "whatever main was that day".
+#
+# THREE INPUTS ARE DELIBERATE, not boilerplate:
+#
+#   versioning-tool: gitversion
+#     `auto` would find package.json and version the npm package, bumping a file nothing
+#     reads: the package is `private` and never published, and the Worker is deployed from
+#     a commit, not from a version number. GitVersion derives the version from git history
+#     alone, which is the thing a deploy can actually be traced back to. It runs on its
+#     built-in defaults; diatreme checks out at fetch-depth 0 with tags, which is what
+#     GitVersion needs to see.
+#
+#   auth-mode: github-token
+#     Tagging and releasing inside this repository needs only `contents: write` on the
+#     workflow's own token. No GitHub App and no hosted broker in the path of a release.
+#
+#   environments: ["prod"]
+#     There is one destination. With a single-entry list every release is a stable semver
+#     rather than a prerelease.
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Never cut two releases at once: a release mints tags, and a second push queues behind the
+# first rather than cancelling it half way through.
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Version and release
+    runs-on: ubuntu-latest
+    steps:
+      # Pinned to a commit, with the tag in the comment; Dependabot moves both together.
+      - uses: MagmaMoose/diatreme@57448f304a7ed60b7fb1d77bb9a507c3de57fb9b # v2.19.0
+        with:
+          mode: release
+          versioning-tool: gitversion
+          auth-mode: github-token
+          environment: prod
+          environments: '["prod"]'
