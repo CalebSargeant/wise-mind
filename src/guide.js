@@ -575,6 +575,7 @@ export function emotionCard(emotion, { intensity = null } = {}) {
 
 /** The question to end on, chosen by what is still open. */
 function closingQuestion(goal, situation) {
+  if (situation?.id === "teenager-risky-choices") return "Which part of this is about their safety, which is about values you want to talk through, and which can you let go?";
   if (situation?.notLetThem) return "Are you safe right now, and is there someone you trust who knows what's going on?";
   if (!goal) return "What would help most right now: being heard, calming down, making sense of it, or working out what to do?";
   if (goal === "talk_to_them" || goal === "set_a_boundary") {
