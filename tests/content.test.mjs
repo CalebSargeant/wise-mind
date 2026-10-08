@@ -137,7 +137,7 @@ test("the routing edge cases the review found stay fixed", () => {
     "My sister has been cutting again": "friend-at-risk",
   };
   for (const [text, id] of Object.entries(cases)) assert.equal(matchSituations(text)[0]?.situation.id, id, text);
-  for (const text of ["My friend keeps cutting me out of plans", "My colleague keeps cutting corners", "My brother is abusing my trust", "My sister is hostile to me", "His kind words really touched me"]) {
+  for (const text of ["My friend keeps cutting me out of plans", "My colleague keeps cutting corners", "My brother is abusing my trust", "My sister is hostile to me", "His kind words really touched me", "I keep stalking my ex's instagram"]) {
     const top = matchSituations(text)[0]?.situation.id;
     assert.ok(!["friend-at-risk", "controlling-partner", "harassment-at-work"].includes(top), `"${text}" went to ${top}`);
   }
@@ -196,6 +196,9 @@ test("screen: the person speaking is not mistaken for someone else, and indirect
     "he grabs me a coffee every morning": "none",
     "the game got violent": "none",
     "I forgot to take my pills this morning": "none",
+    "I keep stalking my ex's instagram": "none",
+    "my ex is stalking me": "abuse_or_unsafe",
+    "I think I'm being stalked": "abuse_or_unsafe",
   };
   for (const [text, level] of Object.entries(expect)) assert.equal(screen(text), level, text);
 });

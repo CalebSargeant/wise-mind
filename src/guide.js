@@ -264,7 +264,8 @@ const ABUSE = new RegExp(
     "abusing (me|us|the (kids|children)|my (kids|children|son|daughter))\\b",
     "coerc",
     "domestic (violence|abuse)",
-    "stalk(s|ed|ing)?",
+    // Not "I keep stalking my ex's instagram": checking someone's profile, not being stalked.
+    "(?<!\\bi(?:'m|'ve been| am| was| keep| kept| have been| still)? )stalk(s|ed|ing)?",
     "(afraid|scared|fear) (of|for) my (life|safety)",
     "(not|un)safe at home",
     "(don'?t|do not|never) feel safe (at home|around (him|her|them|my \\w+))",
