@@ -227,10 +227,10 @@ export const TOOLS = [
     name: "wise_mind_plan_conversation",
     title: "Plan a hard conversation (DEAR MAN, GIVE, FAST)",
     description:
-      "Returns a DBT script scaffold for a hard conversation, with blanks to fill in together: DEAR MAN for the ask, GIVE to protect the relationship, FAST to protect self-respect, " +
+      "Returns a DBT script scaffold for a hard message or conversation, which you turn into the full draft: DEAR MAN for the ask, GIVE to protect the relationship, FAST to protect self-respect, " +
       "a plan for how they're likely to react, tips for writing it as a message, and the Let Them / Let Me stance on the answer. " +
       "Use when the user needs to ask for something, say no, set a boundary, raise a recurring problem or repair things with someone, and it carries emotional weight or tension, " +
-      "or asks how to word a text, message or email to someone they're in tension with. Draft the actual words with them, in their voice. " +
+      "or asks how to word a text, message or email to someone they're in tension with. Write the whole draft from what the conversation already holds (a pasted message, what happened, what they want), in their voice, and ask only for what is missing. " +
       "Not for routine work messages, and not for confronting someone who is hurting or threatening them.",
     inputSchema: {
       type: "object",

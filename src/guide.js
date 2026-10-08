@@ -730,7 +730,7 @@ export function conversationGuide({ kind = "ask", relationship = null, priority 
     priority === "relationship" ? "**GIVE leads**: keep the relationship warm while you ask." :
     priority === "self_respect" ? "**FAST leads**: protect your self-respect, whatever their answer." :
     priority === "objective" ? "**DEAR MAN leads**: the outcome matters most here." :
-    "Decide first what matters most here: the outcome (DEAR MAN leads), the relationship (GIVE leads) or self-respect (FAST leads). All three still apply.";
+    "If they haven't said what matters most, pick the likeliest from the conversation and say which you chose: the outcome (DEAR MAN leads), the relationship (GIVE leads) or self-respect (FAST leads). All three still apply.";
   const who = withWhom(relationship);
   const reactions = reaction && reaction !== "unsure" ? [REACTION_PLAN[reaction], REACTION_PLAN.unsure] : [REACTION_PLAN.unsure, REACTION_PLAN.push_back];
 
@@ -739,7 +739,7 @@ export function conversationGuide({ kind = "ask", relationship = null, priority 
     "",
     "## How to use this",
     bullets([
-      "Fill the blanks WITH them, in their words and their voice. Keep the script to four or five sentences.",
+      "Write the draft yourself from what they've already told you (a pasted message, what happened, what they want), in their voice, in four or five sentences. Give them the draft, not this scaffold; ask only for what's missing, then offer to adjust it.",
       lead,
       relationship === "manager" || relationship === "client" ? "With someone who has power over them, keep it factual and specific, and write it down afterwards." : "Pick a calm, private moment, not the middle of an argument.",
     ]),

@@ -67,7 +67,7 @@ export const PROMPTS = [
         message(
           `I need to have a hard conversation and want to prepare. ${TYPED}\n\n` +
             "Ask me who it's with, what I want from it and what matters most (the outcome, the relationship or my self-respect) if I haven't said. " +
-            "Then use the wise_mind_plan_conversation tool and draft the words with me, in my voice. Keep the script short.",
+            "Then use the wise_mind_plan_conversation tool and write the draft for me from what I've told you, in my voice. Keep it short.",
         ),
       ],
     }),

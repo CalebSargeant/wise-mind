@@ -195,6 +195,7 @@ test("plan_conversation fits the script to the kind, the priority, the channel a
   assert.match(no, /# Say no: a conversation plan with a sibling/);
   assert.match(no, /No, I'm not able to ___/);
   assert.match(no, /GIVE leads/);
+  assert.match(no, /Give them the draft, not this scaffold/, "the plan should end in a written draft, not a worksheet");
   assert.match(no, /## In writing/);
   assert.match(no, /They guilt-trip/);
   for (const part of ["**Describe**", "**Express**", "**Assert**", "**Reinforce**", "**Mindful**", "**Appear confident**", "**Negotiate**", "## FAST", "## Cope ahead"]) {
@@ -202,6 +203,7 @@ test("plan_conversation fits the script to the kind, the priority, the channel a
   }
   const boundary = await run(worker, env(), "wise_mind_plan_conversation", { kind: "set_a_boundary" });
   assert.match(boundary, /If ___ happens again, I will ___/);
+  assert.match(boundary, /pick the likeliest from the conversation/, "a missing priority should not stop the draft");
   assert.doesNotMatch(boundary, /## In writing/);
 });
 
