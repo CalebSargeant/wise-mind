@@ -277,3 +277,12 @@ test("the README's counts match the content", async () => {
     assert.match(window, new RegExp(`\\b${n}\\b`), `README count near "${claim}" is not ${n}`);
   }
 });
+
+// Dependabot bumps wrangler in the lockfile but never the deploy's pinned version, so a
+// bump that forgets deploy.yml fails here instead of splitting CI from `npm run bindings`.
+test("CI deploys with the Wrangler that package-lock.json pins", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const lock = JSON.parse(await readFile(new URL("../package-lock.json", import.meta.url), "utf8"));
+  const deploy = await readFile(new URL("../.github/workflows/deploy.yml", import.meta.url), "utf8");
+  assert.equal(/cloudflare-wrangler-version: '([^']+)'/.exec(deploy)?.[1], lock.packages["node_modules/wrangler"].version);
+});
