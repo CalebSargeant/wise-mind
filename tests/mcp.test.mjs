@@ -435,9 +435,17 @@ test("the brake never stands between a person and the handshake, the listings or
 
 test("a call already on the safety route is never braked", async () => {
   const limited = fakeEnv({ BURST: saysNo() });
-  for (const args of [{ situation_type: "other", safety: "suicide_or_self_harm", country: "NL" }, { situation_type: "controlling-partner", country: "NL" }, { situation_type: "other", topic: "I want to die" }]) {
-    const res = await call(worker, limited, "wise_mind_work_through_situation", args);
-    assert.equal(res.body.result.isError, false, JSON.stringify(args));
+  for (const [name, args] of [
+    ["wise_mind_work_through_situation", { situation_type: "other", safety: "suicide_or_self_harm", country: "NL" }],
+    ["wise_mind_work_through_situation", { situation_type: "controlling-partner", country: "NL" }],
+    ["wise_mind_work_through_situation", { situation_type: "other", topic: "I want to die" }],
+    ["wise_mind_work_through_situation", { situation_type: "other", topic: "I'm afraid of his temper" }],
+    ["wise_mind_work_through_situation", { situation_type: "friend_at_risk" }],
+    ["wise_mind_understand_emotion", { emotion: "suicidal" }],
+    ["wise_mind_skill", { skill: "my partner hits me" }],
+  ]) {
+    const res = await call(worker, limited, name, args);
+    assert.equal(res.body.result.isError, false, `${name} ${JSON.stringify(args)}`);
     assert.match(toolText(res), /# Safety first/);
   }
   assert.equal(limited.BURST.calls, 0);

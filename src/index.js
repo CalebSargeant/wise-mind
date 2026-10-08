@@ -2,7 +2,7 @@ import { dispatch, PARSE_ERROR } from "./mcp.js";
 import { TOOLS } from "./tools.js";
 import { PROMPTS } from "./prompts.js";
 import { SERVER, ENDPOINT } from "./server.js";
-import { safetyLevel, screen, str } from "./guide.js";
+import { matchSituations, safetyLevel, screen, situationById, str } from "./guide.js";
 import { isEndpoint, servedHost } from "./scope.js";
 import { ICON_PNG, ICON_SVG, PRIVACY_TXT, ROBOTS_TXT, guideHtml, guideMarkdown, securityTxt } from "./pages.js";
 import {
@@ -120,17 +120,23 @@ export const isHostedEgress = (ip) => HOSTED_EGRESS_V4.some((cidr) => inV4Cidr(i
 
 /** Requests the brake never counts. See "THE BRAKE NEVER STANDS..." above. */
 const UNBRAKED_METHODS = new Set(["initialize", "ping", "server/discover", "tools/list", "prompts/list"]);
-const SAFETY_PLAYBOOKS = new Set(["friend-at-risk", "controlling-partner"]);
 
 /**
  * A tool call already on the safety route: flagged by the assistant, a safety
- * playbook, or risk in the topic. Its answer is crisis guidance, so it is never
- * braked either. Uses the same bounds as the handlers (topic at 120 characters),
+ * playbook (named, or matched from the topic the way the handler matches it), or
+ * risk in any free text a handler screens (topic, emotion, skill). Its answer is
+ * crisis guidance, so it is never braked either. Uses the handlers' own bounds,
  * so the screen never runs over a whole 64 KiB body.
  */
 const onSafetyRoute = (args) => {
   if (!args || typeof args !== "object") return false;
-  return safetyLevel(args.safety) !== "none" || SAFETY_PLAYBOOKS.has(str(args.situation_type, 60)) || screen(str(args.topic, 120)) !== "none";
+  const topic = str(args.topic, 120);
+  const playbook = situationById(str(args.situation_type, 60)) || matchSituations(topic)[0]?.situation;
+  return (
+    safetyLevel(args.safety) !== "none" ||
+    Boolean(playbook?.safety) ||
+    [topic, str(args.emotion, 60), str(args.skill, 120)].some((text) => screen(text) !== "none")
+  );
 };
 
 const unbraked = (message) =>
