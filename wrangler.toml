@@ -1,0 +1,85 @@
+# wisemind.calebsargeant.com: a public, read-only MCP server that gives an assistant
+# DBT skills and the Let Them / Let Me idea, so it can help a person through a hard
+# moment practically as well as emotionally.
+#
+# The same Worker shape as mcp.calebsargeant.com (CalebSargeant/mcp): one hostname, one
+# path, no authentication. The difference is where the content lives. There is no corpus
+# to publish and no R2 bucket: every skill, playbook and crisis line is a module in
+# src/content/, bundled into the Worker, so what a client reads is exactly what this
+# repository holds at the deployed commit. README.md has the whole shape.
+#
+# ── A `main` AND NO `[assets]`. BOTH ARE DELIBERATE ─────────────────────────
+#
+# `[assets]` is a WORKER-level binding, not a per-route one, so adding one so this Worker
+# could "also serve a page" would put the asset router in front of `/`, which is the MCP
+# endpoint. The one page this hostname has is built by src/pages.js.
+
+name = "wise-mind"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+
+# Pinned for the same reason as CalebSargeant/mcp: without it Wrangler looks the account
+# up through a user-scoped permission an account API token cannot hold. The id is not a
+# credential (it is in every dashboard URL). It is the Magma Moose account because that
+# is where the calebsargeant.com zone lives, and a custom domain has to be in the zone's
+# account.
+account_id = "6e26afa31c37dee1dc82ad2f214f9b3c"
+
+# One canonical hostname. workers.dev would publish a second copy on a name src/scope.js
+# refuses anyway, and a preview would publish a branch to the internet.
+workers_dev = false
+preview_urls = false
+
+# A Custom Domain, not a route: wisemind.calebsargeant.com has no DNS record, so
+# Cloudflare creates the record and the certificate on the first deploy.
+[[routes]]
+pattern = "wisemind.calebsargeant.com"
+custom_domain = true
+
+# Console output only (a handler that threw: tool name and stack, never arguments).
+# Invocation logs are OFF: they record each request's metadata for days, and the people
+# whose assistants call this are, by definition, having a hard time. Nothing here needs to
+# know who called or when. See the privacy notes in src/index.js and README.md.
+[observability]
+enabled = true
+
+[observability.logs]
+invocation_logs = false
+
+# Pinned off rather than left to a default: traces record city, ASN, user agent and
+# URL per request, and Cloudflare has said `enabled = true` may come to switch them on.
+[observability.traces]
+enabled = false
+
+# ── Burst brake ─────────────────────────────────────────────────────────────
+#
+# THE FIELD IS `name`, NOT `binding`. On an old Wrangler the wrong one is only a warning,
+# the Worker deploys without a limiter, and the code (which fails open) never says so.
+# `npm run bindings` must list `env.BURST (60 requests/60s)`. The handshake, listings
+# and crisis_support are never counted (src/index.js, "THE BRAKE").
+#
+# namespace_id is unique per ACCOUNT. 1001 to 1009 were taken in this account (MagmaMoose
+# chat/, mcp.magmamoose.com, mcp.calebsargeant.com and the mcp-oauth limiters), so this
+# Worker uses 1010 and 1011; a shared id would be a shared counter.
+[[ratelimits]]
+name = "BURST"
+namespace_id = "1010"
+simple = { limit = 60, period = 60 }
+
+# Anthropic's outbound range (src/index.js HOSTED_EGRESS_V4): every claude.ai, desktop
+# and mobile user arrives from it, so it is many people, not one client. Its own
+# counter, sized for that. `npm run bindings` must list `env.BURST_HOSTED (1000
+# requests/60s)` too.
+[[ratelimits]]
+name = "BURST_HOSTED"
+namespace_id = "1011"
+simple = { limit = 1000, period = 60 }
+
+[vars]
+# The hostname this Worker answers on. An unknown Host is a 404, and `wrangler dev`
+# resolves because src/scope.js also accepts localhost.
+PUBLIC_HOST = "wisemind.calebsargeant.com"
+
+# ── Secrets ─────────────────────────────────────────────────────────────────
+#
+# None. Nothing here authenticates anybody, stores anything or calls anything.

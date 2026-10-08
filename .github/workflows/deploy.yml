@@ -1,0 +1,68 @@
+name: deploy
+
+# Test the Worker, then hand the deploy to MagmaMoose/tremvok, the way mcp.calebsargeant.com
+# and mcp.magmamoose.com ship. The Worker IS this repository, so there is no path filter.
+#
+# Tremvok owns everything from "the Worker is tested" onwards: Wrangler at a pinned version,
+# the mode, and `cloudflare-verify-config`, which dry-runs the deploy and refuses to publish
+# when Wrangler reports configuration it will not apply (a misspelled `[[ratelimits]]` is
+# only a warning, Wrangler exits 0, and the Worker deploys with no brake).
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  # Never cancel a production deploy mid-upload. Do cancel a superseded pull-request run.
+  group: deploy-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+
+      # Installed here rather than as Tremvok's build command, because the tests need it too.
+      - run: npm ci
+
+      # What fails quietly in production is tested, not reviewed: the crisis path (a
+      # safety concern must put crisis lines first, whatever else was asked), the content
+      # integrity checks (every cross-reference resolves, every crisis line names the
+      # official page it was checked on), the size limits clients truncate at, and the
+      # header validation a 2026-07-28 client is held to.
+      - name: Tests
+        run: npm test
+
+      - name: Deploy
+        uses: MagmaMoose/tremvok@d80a0c588117031bf2fbb94c2612506f5ec4e8fd # v2.15.2
+        with:
+          target: cloudflare-workers
+          checkout: false
+          # Only main publishes. A pull request, or a manual run from any other branch, is
+          # VALIDATED: Wrangler's own `deploy --dry-run`, which bundles, checks the config and
+          # the bindings, uploads nothing and needs no credentials.
+          #
+          # Main never falls back to validating. Without a token Tremvok fails the run
+          # ("CLOUDFLARE_API_TOKEN is required") rather than going green having deployed
+          # nothing.
+          dry-run: ${{ github.ref != 'refs/heads/main' }}
+          # Needs Workers Scripts: Edit on the account and Workers Routes: Edit on the
+          # calebsargeant.com zone (the Custom Domain). The token CalebSargeant/mcp deploys
+          # with has both; README.md says how to mint one.
+          cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          # The same id wrangler.toml pins. Not a credential: it is in every dashboard URL.
+          cloudflare-account-id: 6e26afa31c37dee1dc82ad2f214f9b3c
+          # The version package-lock.json pins, so CI and `npm run bindings` run one Wrangler.
+          cloudflare-wrangler-version: '4.135.0'
+          # No preview is ever published, so there is no preview URL for a comment to carry.
+          pr-comment: 'false'

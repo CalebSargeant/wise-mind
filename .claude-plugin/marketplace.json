@@ -1,0 +1,14 @@
+{
+  "name": "wise-mind",
+  "description": "Wise Mind: DBT skills and the Let Them / Let Me idea for your assistant, as a remote MCP server and a skill that tells Claude when to use it.",
+  "owner": { "name": "Caleb Sargeant", "url": "https://calebsargeant.com/" },
+  "plugins": [
+    {
+      "name": "wise-mind",
+      "source": "./plugin",
+      "description": "Practical and emotional help for hard moments with people: DBT skills plus Let Them / Let Me. Connects the public wisemind.calebsargeant.com MCP server.",
+      "category": "wellbeing",
+      "tags": ["dbt", "emotional-support", "boundaries", "mcp"]
+    }
+  ]
+}
