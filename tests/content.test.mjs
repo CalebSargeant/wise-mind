@@ -177,6 +177,9 @@ test("screen: the person speaking is not mistaken for someone else, and indirect
     "harmed myself": "suicide_or_self_harm",
     "unaliving": "suicide_or_self_harm",
     "i relapsed and cut again": "suicide_or_self_harm",
+    "I took all my pills": "suicide_or_self_harm",
+    "swallowed a handful of pills": "suicide_or_self_harm",
+    "going to take all my pills": "suicide_or_self_harm",
     "they'd be fine without me": "hopeless_or_burden",
     "can't do this any more": "hopeless_or_burden",
     "i want it all to stop": "hopeless_or_burden",
@@ -192,6 +195,7 @@ test("screen: the person speaking is not mistaken for someone else, and indirect
     "scared to go home for christmas": "none",
     "he grabs me a coffee every morning": "none",
     "the game got violent": "none",
+    "I forgot to take my pills this morning": "none",
   };
   for (const [text, level] of Object.entries(expect)) assert.equal(screen(text), level, text);
 });

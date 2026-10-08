@@ -241,7 +241,7 @@ const SELF_HARM = new RegExp(
     "(harmed|burned|burnt|burning|burn) myself(?! (on|with|while|cooking|making|accidentally|by accident)\\b)",
     "relaps\\w* (and|into|on) (cut|self)",
     "overdos",
-    "take (all )?(my|the) pills",
+    "(take|took|taken|taking|swallow(ed|ing)?) (all (of )?|too many |\\d+ |a (lot|bunch|handful|bottle|box|packet) of )(my |the |those |these )?(pills|tablets|meds|medication|painkillers|paracetamol)",
     "hang myself",
     "jump (off|in front)",
   ].join("|"),
