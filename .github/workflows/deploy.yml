@@ -63,6 +63,6 @@ jobs:
           # The same id wrangler.toml pins. Not a credential: it is in every dashboard URL.
           cloudflare-account-id: 6e26afa31c37dee1dc82ad2f214f9b3c
           # The version package-lock.json pins, so CI and `npm run bindings` run one Wrangler.
-          cloudflare-wrangler-version: '4.135.0'
+          cloudflare-wrangler-version: '4.147.0'
           # No preview is ever published, so there is no preview URL for a comment to carry.
           pr-comment: 'false'
