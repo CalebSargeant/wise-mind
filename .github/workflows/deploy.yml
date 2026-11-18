@@ -44,7 +44,7 @@ jobs:
         run: npm test
 
       - name: Deploy
-        uses: MagmaMoose/tremvok@2e82eb5cef4ad8ad3bb7963dc9602caa221d59a1 # v2.20.1
+        uses: MagmaMoose/tremvok@67ac30cf940e2351c1e52b29f5b53625f7a4a0f0 # v2.20.3
         with:
           target: cloudflare-workers
           checkout: false
